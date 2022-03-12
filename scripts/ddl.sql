@@ -10,5 +10,5 @@ CREATE TABLE product (
     name VARCHAR(100),
     price DECIMAL(10, 2),
     category_id INT,
-    FOREIGN KEY (category_id) REFERENCES category(codigo)
+    FOREIGN KEY (category_id) REFERENCES category(id)
 );

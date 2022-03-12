@@ -52,11 +52,11 @@ public class ProductView implements Serializable {
             this.searchProductByCategory();
 
             this.categories = this.categoryService.listing();
-            this.categories.add(0, new Category(0, "Todos"));
         } else {
             this.products = this.productService.listing();
 
             this.categories = this.categoryService.listing();
+            this.categories.add(0, new Category(0, "Todos"));
 
             this.searchCategory = new Category();
         }
