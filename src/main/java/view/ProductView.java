@@ -41,7 +41,11 @@ public class ProductView implements Serializable {
 
         if (categoriaId != null) {
             try {
-                this.searchCategory = this.categoryService.byId(Integer.parseInt(categoriaId));
+                if (categoriaId.equals("0")) {
+                    this.searchCategory = new Category();
+                } else {
+                    this.searchCategory = this.categoryService.byId(Integer.parseInt(categoriaId));
+                }
             } catch (NumberFormatException e) {
                 this.showErrorMessage("O identificador da categoria não corresponde ao formato esperado!", e);
             } catch (Exception e) {
@@ -52,11 +56,11 @@ public class ProductView implements Serializable {
             this.searchProductByCategory();
 
             this.categories = this.categoryService.listing();
+            this.categories.add(0, new Category(0, "Todos"));
         } else {
             this.products = this.productService.listing();
 
             this.categories = this.categoryService.listing();
-            this.categories.add(0, new Category(0, "Todos"));
 
             this.searchCategory = new Category();
         }
