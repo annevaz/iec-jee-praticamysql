@@ -1,0 +1,116 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <h:outputStylesheet library="webjars" name="primeflex/2.0.0/primeflex.min.css" />
+</h:head>
+<h:form id="form">
+    <div class="card crud-demo">
+        <p:growl id="messages" showDetail="true"/>
+
+        <p:toolbar>
+            <p:toolbarGroup>
+                <p:commandButton value="Novo" icon="pi pi-plus" actionListener="#{productView.newProduct}"
+                                 update=":form:manage-product-content" oncomplete="PF('manageProductDialog').show()"
+                                 styleClass="ui-button-success">
+                    <p:resetInput target=":form:manage-product-content"/>
+                </p:commandButton>
+            </p:toolbarGroup>
+
+            <p:toolbarGroup align="right">
+                <p:linkButton href="/praticamysql/initial.xhtml" value="Início" icon="pi pi-home" />
+            </p:toolbarGroup>
+        </p:toolbar>
+
+        <p:dataTable id="dt-products" widgetVar="dtProducts" var="product" value="#{productView.products}"
+                     reflow="true" styleClass="products-table"
+                     rowKey="#{product.id}">
+            <f:facet name="header">
+                <div class="products-table-header">
+                    <span style="font-weight: bold">PRODUTOS</span>
+                </div>
+            </f:facet>
+
+            <p:column headerText="Código">
+                <h:outputText value="#{product.id}"/>
+            </p:column>
+            <p:column headerText="Nome" filterBy="#{product.name}">
+                <h:outputText value="#{product.name}"/>
+            </p:column>
+            <p:column headerText="Categoria" filterBy="#{product.category.name}">
+                <h:outputText value="#{product.category.name}"/>
+            </p:column>
+            <p:column headerText="Preço">
+                <h:outputText value="#{product.price}" style="font-weight: 700">
+                    <f:convertNumber currencySymbol="R$" type="currency"/>
+                </h:outputText>
+            </p:column>
+            <p:column exportable="false">
+                <p:commandButton icon="pi pi-pencil" update=":form:manage-product-content"
+                                 oncomplete="PF('manageProductDialog').show()"
+                                 styleClass="edit-button rounded-button ui-button-success" process="@this"
+                                 style="margin-right: 10px;">
+                    <f:setPropertyActionListener value="#{product}" target="#{productView.selectedProduct}"/>
+                    <p:resetInput target=":form:manage-product-content"/>
+                </p:commandButton>
+                <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash" process="@this"
+                                 oncomplete="PF('deleteProductDialog').show()">
+                    <f:setPropertyActionListener value="#{product}" target="#{productView.selectedProduct}"/>
+                </p:commandButton>
+            </p:column>
+
+        </p:dataTable>
+
+        <p:dialog header="Produto" ajax="true" showEffect="fade" modal="true"
+                  widgetVar="manageProductDialog" dynamic="true" responsive="true" >
+            <p:outputPanel id="manage-product-content" class="ui-fluid">
+                <p:outputPanel rendered="#{not empty productView.selectedProduct}">
+                    <div class="p-field">
+                        <p:outputLabel for="name">Nome</p:outputLabel>
+                        <p:inputText id="name" value="#{productView.selectedProduct.name}" required="true"/>
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="category">Categoria</p:outputLabel>
+                        <p:selectOneMenu id="category" value="#{productView.selectedProduct.category.id}">
+                            <f:selectItems value="#{productView.categories}" var="category" itemLabel="#{category.name}"
+                                itemValue="#{category.id}" />
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="p-formgrid p-grid">
+                        <div class="p-field p-col">
+                            <p:outputLabel for="price">Preço</p:outputLabel>
+                            <p:inputNumber id="price" value="#{productView.selectedProduct.price}"
+                                           emptyValue="0" symbol="R$" roundMethod="S"
+                                           decimalSeparator="," thousandSeparator="." decimalPlaces="2" />
+                        </div>
+                    </div>
+                </p:outputPanel>
+            </p:outputPanel>
+
+            <f:facet name="footer">
+                <p:commandButton value="Salvar" icon="pi pi-check" actionListener="#{productView.saveProduct}"
+                                 update="manage-product-content" process="manage-product-content @this"/>
+                <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('manageProductDialog').hide()"
+                                 class="ui-button-secondary"/>
+            </f:facet>
+        </p:dialog>
+
+        <p:confirmDialog widgetVar="deleteProductDialog" showEffect="fade" width="300"
+                         message="Excluir este produto?" header="Confirmação" severity="warn">
+            <p:commandButton value="Sim" icon="pi pi-check" actionListener="#{productView.deleteProduct}"
+                             process="@this" oncomplete="PF('deleteProductDialog').hide()"/>
+            <p:commandButton value="Não" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                             onclick="PF('deleteProductDialog').hide()"/>
+        </p:confirmDialog>
+
+        <p:confirmDialog global="true" showEffect="fade" width="300">
+            <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+            <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-secondary"
+                             icon="pi pi-times"/>
+        </p:confirmDialog>
+    </div>
+</h:form>
+
+</html>

@@ -1,13 +1,25 @@
 package repository;
 
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
-@Local
-public interface RepositorySession {
-    @TransactionAttribute(TransactionAttributeType.NEVER)
-    public CategoriaRepository getCategoriaRepository();
+@Stateless
+public class RepositorySession implements Session {
+    @PersistenceContext
+    private EntityManager em;
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public CategoryRepository getCategoryRepository(){
+        return new CategoryRepository().setEntityManager(em);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public ProductRepository getProductRepository(){
+        return new ProductRepository().setEntityManager(em);
+    }
 }
-
-

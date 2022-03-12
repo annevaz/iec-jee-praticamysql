@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <h:outputStylesheet library="webjars" name="primeflex/2.0.0/primeflex.min.css" />
+</h:head>
+
+<h:form id="form">
+    <div class="card">
+        <p:panel id="panel" header="Pesquisa de produtos por categoria" styleClass="p-mb-3">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h:panelGrid columns="4" cellpadding="3">
+                    <h:outputLabel for="category" value="Categoria:"/>
+                    <p:selectOneMenu id="category" value="#{productView.searchCategory.id}" required="true" label="Categoria" style="width: 12rem">
+                        <f:selectItems value="#{productView.categories}" var="category" itemLabel="#{category.name}"
+                            itemValue="#{category.id}" />
+                    </p:selectOneMenu>
+
+                    <p:commandButton id="search" update="@form" value="Pesquisar" icon="pi pi-search"
+                        action="#{productView.searchProductByCategory}" styleClass="p-mr-2 ui-button-info" />
+                </h:panelGrid>
+
+                <p:linkButton href="/praticamysql/initial.xhtml" value="Início" icon="pi pi-home" />
+            </div>
+        </p:panel>
+    </div>
+
+    <div class="card">
+        <p:dataTable id="products" var="product" value="#{productView.products}" rowKey="#{product.id}" selectionMode="single">
+            <f:facet name="header">
+                PRODUTOS POR CATEGORIA
+            </f:facet>
+
+            <p:column headerText="Código">
+                <h:outputText value="#{product.id}" />
+            </p:column>
+            <p:column headerText="Nome">
+                <h:outputText value="#{product.name}" />
+            </p:column>
+            <p:column headerText="Categoria">
+                <h:outputText value="#{product.category.name}" />
+            </p:column>
+            <p:column headerText="Preço">
+                <h:outputText value="#{product.price}" >
+                    <f:convertNumber currencySymbol="R$" type="currency"/>
+                </h:outputText>
+            </p:column>
+        </p:dataTable>
+    </div>
+</h:form>
+
+</html>
